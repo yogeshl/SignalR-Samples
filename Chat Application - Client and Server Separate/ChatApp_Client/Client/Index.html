@@ -1,0 +1,57 @@
+﻿
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="Scripts/jquery-1.6.4.js"></script>
+    <script src="Scripts/jquery.signalR-2.0.3.js"></script>
+    <script src="http://SERVER/AppName/signalr/hubs" type="text/javascript"></script>
+
+    <script>
+	
+	//jQuery.support.cors = true; //force cross-site scripting
+        $(document).ready(function () {
+
+			
+			$.connection.hub.url = 'http://SERVER/AppName/signalr/';
+		    var hubProxy = $.connection.chatHub;
+			
+			hubProxy.client.NewMessageCallBack = function (name, message) {
+                var item = "<li>"+ name + " : " + message   +"</li>";
+                $("#discussion").append(item);
+            };
+			
+				
+			
+			$.connection.hub.start({ transport: 'longPolling', xdomain: true }).done(function(){
+			   alert("Connected");
+			   $("#send").click(function () {
+                    hubProxy.server.send($("#name").val(), $("#message").val());
+                    $("#message").val("");
+                });
+				
+			
+			});
+        });
+
+
+    </script>
+
+</head>
+<body>
+      <h1>Chat Application</h1>
+    <hr />
+    <div>
+        Name : <input type="text" id="name" />
+        Message : <input type="text" id="message" />
+        <input type="button" value="Send" id="send" />
+    </div>
+
+    <ul id="discussion">
+
+    </ul>
+</body>
+</html>
